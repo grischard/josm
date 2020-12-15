@@ -83,15 +83,14 @@ public class PlatformHookOsx implements PlatformHook, InvocationHandler {
                 setHandlers(Desktop.class, quitHandler, aboutHandler, openFilesHandler, preferencesHandler, proxy, Desktop.getDesktop());
             }
             // setup the dock icon. It is automatically set with application bundle and Web start but we need
-            // to do it manually if run with `java -jar``. 
-            eawtApplication.getDeclaredMethod("setDockIconImage", Image.class).invoke(
-                appli, 
-                Optional.ofNullable(
-                    new ImageProvider(Config.getUrls().getJOSMWebsite()+"/logo-macos.png").setOptional(true).get()
-                ).orElse( // Fall back to default icon
-                    ImageProvider.get("logo")).getImage()
-            );
-        
+            // to do it manually if run with `java -jar``
+            try {
+                eawtApplication.getDeclaredMethod("setDockIconImage", Image.class).invoke(appli, ImageProvider.get(Config.getUrls().getJOSMWebsite()+"/logo-macos.png").getImage());
+            } catch (JosmRuntimeException e) {
+                // fall back to default logo
+                eawtApplication.getDeclaredMethod("setDockIconImage", Image.class).invoke(appli, ImageProvider.get("logo").getImage());
+            }
+            
             // enable full screen
             enableOSXFullscreen(MainApplication.getMainFrame());
         } catch (ReflectiveOperationException | SecurityException | IllegalArgumentException ex) {
