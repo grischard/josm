@@ -35,4 +35,4 @@ echo "Building and signin exe"
 
 echo "Building done."
 
-zip -9 app/JOSM.exe app/JOSM.zip
+# zip -9 app/JOSM.exe app/JOSM.zip
