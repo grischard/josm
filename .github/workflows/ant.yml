@@ -200,3 +200,29 @@ jobs:
           asset_path: app/JOSM.zip
           asset_name: JOSM-${{ runner.os}}-java${{ matrix.java }}.zip
           asset_content_type: application/zip
+      - name: Build and package for Windows
+        if: ${{ runner.os == 'windows' && always() }}
+        run: |
+          ./native/windows/windows-jpackage.sh ${{ needs.createrelease.outputs.josm_revision }}
+      - name: Upload app zip
+        if: ${{ runner.os == 'windows' && always() }}
+        id: upload-app-zip
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.createrelease.outputs.upload_url }} # This pulls from the CREATE RELEASE job above, referencing its ID to get its outputs object, which include a `upload_url`.
+          asset_path: app/JOSM.zip
+          asset_name: JOSM-${{ runner.os}}-java${{ matrix.java }}.zip
+          asset_content_type: application/zip
+      - name: Upload app exe
+        if: ${{ runner.os == 'windows' && always() }}
+        id: upload-app-exe
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.createrelease.outputs.upload_url }} # This pulls from the CREATE RELEASE job above, referencing its ID to get its outputs object, which include a `upload_url`.
+          asset_path: app/JOSM.exe
+          asset_name: JOSM-${{ runner.os}}-java${{ matrix.java }}.zip
+          asset_content_type: application/zip
