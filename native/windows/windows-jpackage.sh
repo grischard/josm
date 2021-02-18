@@ -16,7 +16,7 @@ echo "Building JOSM.exe"
 mkdir app
 
 echo "Building and signin exe"
-    jpackage $JPACKAGEOPTIONS -n "JOSM" --input dist --main-jar josm-custom.jar \
+    jpackage -n "JOSM" --input dist --main-jar josm-custom.jar \
     --main-class org.openstreetmap.josm.gui.MainApplication \
     --icon ./nodist/images/logo.png --type exe --dest app \
     --java-options "-Xmx8192m" \
