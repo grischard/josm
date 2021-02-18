@@ -20,7 +20,7 @@ echo "Building and signin exe"
     --main-class org.openstreetmap.josm.gui.MainApplication \
     --icon ./nodist/images/logo.png --type exe --dest app \
     --java-options "-Xmx8192m" \
-    --app-version "$1" \
+    --app-version "1.5.0.$1" \
     --copyright "JOSM, and all its integral parts, are released under the GNU General Public License v2 or later" \
     --vendor "https://josm.openstreetmap.de" \
     --file-associations native/macosx/bz2.properties \

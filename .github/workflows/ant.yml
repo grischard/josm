@@ -151,55 +151,55 @@ jobs:
         # run: |
         #   cp dist/josm-custom.jar JOSM-${{ runner.os}}-java${{ matrix.java }}-${{ needs.createrelease.outputs.josm_revision }}.jar
         #   gh release upload ${{ needs.createrelease.outputs.josm_release_tag }} JOSM-${{ runner.os}}-java${{ matrix.java }}-${{ needs.createrelease.outputs.josm_revision }}.jar
-      - name: Test with Ant, headless ${{ matrix.headless }}
-        if: ${{ needs.createrelease.outputs.josm_prerelease }}
-        run: |
-          ANT="${{ env.ANT_HOME }}/bin/ant -DnoJavaFX=true test-unit-hardfail"
-          if [ "${{ matrix.headless }}" == "true" ]; then
-            $ANT -Dtest.headless=true
-          else
-            xvfb-run $ANT -Dtest.headless=false
-          fi
-      - name: Dump errors if failed
-        if: ${{ failure() }}
-        run: "grep -L ', Failures: 0, Skipped: ' test/report/*.txt | xargs cat"
-      - name: Upload Ant reports
-        if: ${{ always() }}
-        uses: actions/upload-artifact@v2
-        with:
-          name: Ant reports for JOSM ${{ needs.createrelease.outputs.josm_revision }} on java ${{ matrix.java }} on ${{ matrix.os }} with headless=${{ matrix.headless }}
-          path: test/report/*.txt
-      - name: Publish Test Report with junit-report-annotations-action
-        uses: ashley-taylor/junit-report-annotations-action@1.3
-        if: always()
-        with:
-          access-token: ${{ secrets.GITHUB_TOKEN }}
-          path: 'test/report/TEST*.xml'
-      - name: Publish Test Report with action-junit-report
-        if: always()
-        uses: mikepenz/action-junit-report@v1
-        with:
-          report_paths: 'test/report/TEST*.xml'
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Build and package for macOS
-        if: ${{ runner.os == 'macos' && always() }}
-        env:
-          CERT_MACOS_P12: ${{ secrets.CERT_MACOS_P12 }}
-          CERT_MACOS_PW: ${{ secrets.CERT_MACOS_PW }}
-          APPLE_ID_PW: ${{ secrets.APPLE_ID_PW }}
-        run: |
-          ./native/macosx/macos-jpackage.sh ${{ needs.createrelease.outputs.josm_revision }}
-      - name: Upload app
-        if: ${{ runner.os == 'macos' && always() }}
-        id: upload-app
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ needs.createrelease.outputs.upload_url }} # This pulls from the CREATE RELEASE job above, referencing its ID to get its outputs object, which include a `upload_url`.
-          asset_path: app/JOSM.zip
-          asset_name: JOSM-${{ runner.os}}-java${{ matrix.java }}.zip
-          asset_content_type: application/zip
+      # - name: Test with Ant, headless ${{ matrix.headless }}
+      #   if: ${{ needs.createrelease.outputs.josm_prerelease }}
+      #   run: |
+      #     ANT="${{ env.ANT_HOME }}/bin/ant -DnoJavaFX=true test-unit-hardfail"
+      #     if [ "${{ matrix.headless }}" == "true" ]; then
+      #       $ANT -Dtest.headless=true
+      #     else
+      #       xvfb-run $ANT -Dtest.headless=false
+      #     fi
+      # - name: Dump errors if failed
+      #   if: ${{ failure() }}
+      #   run: "grep -L ', Failures: 0, Skipped: ' test/report/*.txt | xargs cat"
+      # - name: Upload Ant reports
+      #   if: ${{ always() }}
+      #   uses: actions/upload-artifact@v2
+      #   with:
+      #     name: Ant reports for JOSM ${{ needs.createrelease.outputs.josm_revision }} on java ${{ matrix.java }} on ${{ matrix.os }} with headless=${{ matrix.headless }}
+      #     path: test/report/*.txt
+      # - name: Publish Test Report with junit-report-annotations-action
+      #   uses: ashley-taylor/junit-report-annotations-action@1.3
+      #   if: always()
+      #   with:
+      #     access-token: ${{ secrets.GITHUB_TOKEN }}
+      #     path: 'test/report/TEST*.xml'
+      # - name: Publish Test Report with action-junit-report
+      #   if: always()
+      #   uses: mikepenz/action-junit-report@v1
+      #   with:
+      #     report_paths: 'test/report/TEST*.xml'
+      #     github_token: ${{ secrets.GITHUB_TOKEN }}
+      # - name: Build and package for macOS
+      #   if: ${{ runner.os == 'macos' && always() }}
+      #   env:
+      #     CERT_MACOS_P12: ${{ secrets.CERT_MACOS_P12 }}
+      #     CERT_MACOS_PW: ${{ secrets.CERT_MACOS_PW }}
+      #     APPLE_ID_PW: ${{ secrets.APPLE_ID_PW }}
+      #   run: |
+      #     ./native/macosx/macos-jpackage.sh ${{ needs.createrelease.outputs.josm_revision }}
+      # - name: Upload app
+      #   if: ${{ runner.os == 'macos' && always() }}
+      #   id: upload-app
+      #   uses: actions/upload-release-asset@v1
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   with:
+      #     upload_url: ${{ needs.createrelease.outputs.upload_url }} # This pulls from the CREATE RELEASE job above, referencing its ID to get its outputs object, which include a `upload_url`.
+      #     asset_path: app/JOSM.zip
+      #     asset_name: JOSM-${{ runner.os}}-java${{ matrix.java }}.zip
+      #     asset_content_type: application/zip
       - name: Build and package for Windows
         if: ${{ runner.os == 'windows' && always() }}
         run: |
