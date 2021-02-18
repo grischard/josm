@@ -224,5 +224,5 @@ jobs:
         with:
           upload_url: ${{ needs.createrelease.outputs.upload_url }} # This pulls from the CREATE RELEASE job above, referencing its ID to get its outputs object, which include a `upload_url`.
           asset_path: app/JOSM.exe
-          asset_name: JOSM-${{ runner.os}}-java${{ matrix.java }}.zip
-          asset_content_type: application/zip
+          asset_name: JOSM-${{ runner.os}}-java${{ matrix.java }}.exe
+          asset_content_type: application/vnd.microsoft.portable-executable
