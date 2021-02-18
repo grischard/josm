@@ -208,7 +208,7 @@ jobs:
         if: ${{ runner.os == 'windows' && always() }}
         uses: papeloto/action-zip@v1
         with:
-          files: app/JOSM.exe
+          files: app/JOSM-0.0.${{ needs.createrelease.outputs.josm_revision }}.exe
           dest: app/JOSM.zip
       - name: Upload app zip
         if: ${{ runner.os == 'windows' && always() }}
@@ -229,6 +229,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ needs.createrelease.outputs.upload_url }} # This pulls from the CREATE RELEASE job above, referencing its ID to get its outputs object, which include a `upload_url`.
-          asset_path: app/JOSM.exe
+          asset_path: app/JOSM-0.0.${{ needs.createrelease.outputs.josm_revision }}.exe
           asset_name: JOSM-${{ runner.os}}-java${{ matrix.java }}.exe
           asset_content_type: application/vnd.microsoft.portable-executable
