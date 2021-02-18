@@ -204,6 +204,12 @@ jobs:
         if: ${{ runner.os == 'windows' && always() }}
         run: |
           ./native/windows/windows-jpackage.sh ${{ needs.createrelease.outputs.josm_revision }}
+      - name: create zip archive
+        if: ${{ runner.os == 'windows' && always() }}
+        uses: papeloto/action-zip@v1
+        with:
+          files: app/JOSM.exe
+          dest: app/JOSM.zip
       - name: Upload app zip
         if: ${{ runner.os == 'windows' && always() }}
         id: upload-app-zip
