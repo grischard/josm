@@ -18,11 +18,11 @@ mkdir app
 echo "Building and signin exe"
     jpackage -n "JOSM" --input dist --main-jar josm-custom.jar \
     --main-class org.openstreetmap.josm.gui.MainApplication \
-    --icon ./nodist/images/logo.png --type exe --dest app \
+    --icon ./native/windows/logo.ico --type exe --dest app \
     --java-options "-Xmx8192m" \
     --app-version "0.0.$1" \
     --copyright "JOSM, and all its integral parts, are released under the GNU General Public License v2 or later" \
-    --vendor "https://josm.openstreetmap.de" \
+    --vendor "JOSM" \
     --file-associations native/macosx/bz2.properties \
     --file-associations native/macosx/geojson.properties \
     --file-associations native/macosx/gpx.properties \
