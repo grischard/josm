@@ -12,6 +12,7 @@ set -Eeo pipefail
 set +x
 
 APPLE_ID="thomas.skowron@fossgis.de"
+SIGNING_KEY_NAME="Developer ID Application: FOSSGIS e.V. (P8AAAGN2AM)"
 IMPORT_AND_UNLOCK_KEYCHAIN=${IMPORT_AND_UNLOCK_KEYCHAIN:-1}
 
 if [ -z "${1-}" ]
@@ -56,7 +57,7 @@ else
   JPACKAGEOPTIONS=""
 fi
 
-echo "Building and signing app"
+echo "Building (and signing if necessary) app"
 jpackage $JPACKAGEOPTIONS -n "JOSM" --input dist --main-jar josm-custom.jar \
     --main-class org.openstreetmap.josm.gui.MainApplication \
     --icon ./native/macosx/JOSM.icns --type app-image --dest app \
@@ -75,10 +76,8 @@ jpackage $JPACKAGEOPTIONS -n "JOSM" --input dist --main-jar josm-custom.jar \
     --app-version "$1" \
     --copyright "JOSM, and all its integral parts, are released under the GNU General Public License v2 or later" \
     --vendor "JOSM" \
-    --mac-sign \
     --mac-package-identifier de.openstreetmap.josm \
     --mac-package-signing-prefix de.openstreetmap.josm \
-    --mac-signing-keychain $KEYCHAINPATH \
     --file-associations native/file-associations/bz2.properties \
     --file-associations native/file-associations/geojson.properties \
     --file-associations native/file-associations/gpx.properties \
@@ -88,7 +87,10 @@ jpackage $JPACKAGEOPTIONS -n "JOSM" --input dist --main-jar josm-custom.jar \
     --file-associations native/file-associations/osm.properties \
     --file-associations native/file-associations/zip.properties \
     --add-modules java.base,java.datatransfer,java.desktop,java.logging,java.management,java.naming,java.net.http,java.prefs,java.rmi,java.scripting,java.sql,java.transaction.xa,java.xml,jdk.crypto.ec,jdk.jfr,jdk.jsobject,jdk.unsupported,jdk.unsupported.desktop,jdk.xml.dom,javafx.controls,javafx.media,javafx.swing,javafx.web
-
+if $SIGNAPP; then
+    cd app
+    codesign -vvv --timestamp --options runtime --force --deep --sign $SIGNING_KEY_NAME JOSM.app
+    
 echo "Building done."
 
 if $SIGNAPP; then
